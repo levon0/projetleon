@@ -1,4 +1,4 @@
-package fr.levitt.projet;
+package fr.levon.projettechno;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
