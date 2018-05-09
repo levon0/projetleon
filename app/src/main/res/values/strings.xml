@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">projet</string>
+    <string name="name">nom</string>
+    <string name="symbol">symbole</string>
+    <string name="ranks">rank</string>
+    <string name="priceUSD">prixUSD</string>
+    <string name="priceBTC">prixBTC</string>
+    <string name="change1H">change1H</string>
+    <string name="change24H">change24H</string>
+    <string name="change7D">change7D</string>
+
+
 </resources>

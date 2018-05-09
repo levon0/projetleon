@@ -2,12 +2,10 @@ package fr.levon.projettechno;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -21,13 +19,16 @@ import okhttp3.ResponseBody;
 public class MainActivity extends AppCompatActivity {
 
     final OkHttpClient client = new OkHttpClient();
+    ListView listViewPrincipale;
+    String[] itemname;
+    int[] imgIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listViewPrincipale = (ListView) findViewById(R.id.list);
+        this.listViewPrincipale=(ListView) findViewById(R.id.list);
         try {
             this.run();
         } catch (IOException e) {
@@ -40,9 +41,8 @@ public class MainActivity extends AppCompatActivity {
     protected void run() throws IOException {
 
         Request request = new Request.Builder()
-                .url("https://api.coinmarketcap.com/v1/ticker/url")
+                .url("https://api.coinmarketcap.com/v1/ticker/")
                 .build();
-        Response response = client.newCall(request).execute();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -51,40 +51,40 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String jsonRecup= null;
                 try (ResponseBody responseBody = response.body()) {
                     if (!response.isSuccessful())
                         throw new IOException("Unexpected code " + response);
-                    Log.i("reponse",responseBody.string());
-                }
-                String jsonRecpu=response.body().string();
-                JSONObject json=null;
-                try {
-                    json= new JSONObject(jsonRecpu);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JSONArray noms = null;
-                JSONArray symboles = null;
-                JSONArray rangs = null;
-                JSONArray prixUSD=null;
-                JSONArray prixBTC=null;
-                JSONArray change1H=null;
-                JSONArray change24H=null;
-                JSONArray change7J=null;
-                try {
-                    noms = json.getJSONArray("name");
-                    symboles = json.getJSONArray("symbol");
-                    rangs = json.getJSONArray("rank");
-                    prixUSD = json.getJSONArray("price_usd");
-                    prixBTC = json.getJSONArray("price_btc");
-                    change1H = json.getJSONArray("percent_change_1h");
-                    change24H = json.getJSONArray("percent_change_24h");
-                    change7J = json.getJSONArray("percent_change_7d");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    jsonRecup = responseBody.string();
                 }
 
+                ObjectMapper mapper = new ObjectMapper();
+                final Coin[] coins = mapper.readValue(jsonRecup, Coin[].class);
+                itemname= new String[coins.length];
+                imgIds=new int[coins.length];
+                for (int i=0;i<coins.length;i++){
+                    itemname[i]=coins[i].getSymbol();
+                    imgIds[i]=i;
+                }
+                runOnUiThread(new Runnable() {
+                    public void run(){
+                        Toast.makeText(MainActivity.this, "Informations récupérées.",
+                                Toast.LENGTH_SHORT).show();
+                        MainAdapter adapter = new MainAdapter(coins,MainActivity.this, itemname, imgIds);
+                        listViewPrincipale.setAdapter(adapter);
+
+                    }
+                });
+
+
+
             }
+
+
+
+
         });
+
     }
+
 }
