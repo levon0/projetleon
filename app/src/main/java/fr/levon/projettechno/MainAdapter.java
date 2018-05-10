@@ -14,9 +14,9 @@ public class MainAdapter extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     private final String[] itemname;
-    private final int[] imgIds;
+    private final Integer[] imgIds;
 
-    public MainAdapter(Coin[] coins, Context context, String[] itemname, int[] imgIds) {
+    public MainAdapter(Coin[] coins, Context context, String[] itemname, Integer[] imgIds) {
         super();
         this.coins = coins;
         this.context = context;
@@ -50,7 +50,7 @@ public class MainAdapter extends BaseAdapter {
             v=view;
         }
         ImageView img = v.findViewById(R.id.img);
-        TextView text=v.findViewById(R.id.text);
+        TextView text=v.findViewById(R.id.ButtonPortefeuille);
         text.setText(coins[i].getName());
         img.setImageResource(imgIds[i]);
 

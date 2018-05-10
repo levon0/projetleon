@@ -8,6 +8,7 @@
     <string name="change1H">change1H</string>
     <string name="change24H">change24H</string>
     <string name="change7D">change7D</string>
+    <string name="title_activity_portefeuille">PortefeuilleActivity</string>
 
 
 </resources>

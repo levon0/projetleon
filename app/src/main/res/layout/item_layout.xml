@@ -6,22 +6,24 @@
     android:layout_height="match_parent"
     tools:context="fr.levon.projettechno.MainActivity">
 
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/text"
-        android:text="coucou"
+        android:id="@+id/ButtonPortefeuille"
+        android:text="nom_pas_trouvé"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img"
         />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="23pt"
+        android:layout_height="23pt"
         android:id="@+id/img"
         />
+
 
 
 </android.support.constraint.ConstraintLayout>

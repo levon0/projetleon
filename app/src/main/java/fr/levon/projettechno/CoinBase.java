@@ -11,13 +11,16 @@ public class CoinBase extends SQLiteOpenHelper{
     private static final String NOM = "nom";
     private static final String SYMBOL = "Symbole";
     private static final String RANK = "Rang";
-    private static final String PRICE_USD = "prix USD";
-    private static final String PRICE_BTC = "prix BTC";
-    private static final String CHANGE1H = "Variation 1H";
-    private static final String CHANGE24H = "Variation 24H";
-    private static final String CHANGE7D = "Variation 7J";
+    private static final String PRICE_USD = "prixUSD";
+    private static final String PRICE_BTC = "prixBTC";
+    private static final String CHANGE1H = "Variation1H";
+    private static final String CHANGE24H = "Variation24H";
+    private static final String CHANGE7D = "Variation7J";
 
     public CoinBase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, DATABASE_NAME, null, version);
+    }
+    public CoinBase(Context context, String name, int version) {
         super(context, DATABASE_NAME, null, version);
     }
 
@@ -48,7 +51,6 @@ public class CoinBase extends SQLiteOpenHelper{
         values.put(CHANGE1H,coin.getName());
         values.put(CHANGE24H,coin.getName());
         values.put(CHANGE7D,coin.getName());
-
 
 
     }
