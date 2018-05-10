@@ -1,7 +1,13 @@
 package fr.levon.projettechno;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,27 +26,46 @@ public class MainActivity extends AppCompatActivity {
 
     final OkHttpClient client = new OkHttpClient();
     ListView listViewPrincipale;
-    String[] itemname;
-    int[] imgIds;
+    String[] itemName;
+    Integer[] imgIds;
+    private Button opener;
+    private Coin[] coins;
+    private CoinBase coinBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.coinBase=new CoinBase(this, "Coins", 1);
         setContentView(R.layout.activity_main);
+        Folio folio = new Folio();
+        CoinBase coinBase = new CoinBase(this,"Coins",null,1 );
 
         this.listViewPrincipale=(ListView) findViewById(R.id.list);
         try {
             this.run();
+            this.opener = (Button) this.findViewById(R.id.ButtonPortefeuille);
+            opener.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(listViewPrincipale.getContext(), BuySellActivity.class);
+                    startActivity(intent);
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
+
 
     }
 
 
     protected void run() throws IOException {
 
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url("https://api.coinmarketcap.com/v1/ticker/")
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -57,24 +82,30 @@ public class MainActivity extends AppCompatActivity {
                         throw new IOException("Unexpected code " + response);
                     jsonRecup = responseBody.string();
                 }
-
                 ObjectMapper mapper = new ObjectMapper();
                 final Coin[] coins = mapper.readValue(jsonRecup, Coin[].class);
-                itemname= new String[coins.length];
-                imgIds=new int[coins.length];
+
+                itemName = new String[coins.length];
+                imgIds=new Integer[coins.length];
+                Log.i("nbcoins","+"+coins.length);
+                ((MainActivity)getActivity()).setCoins(coins); //et on set les coins ?
                 for (int i=0;i<coins.length;i++){
-                    itemname[i]=coins[i].getSymbol();
-                    imgIds[i]=i;
+                    itemName[i]=coins[i].getSymbol();
+                    imgIds[i]=(Integer) getResources().getIdentifier(itemName[i].toLowerCase(),"drawable",getPackageName());
+                    ((MainActivity)getActivity()).getCoinBase().addData(coins[i]);
                 }
+
                 runOnUiThread(new Runnable() {
                     public void run(){
                         Toast.makeText(MainActivity.this, "Informations récupérées.",
                                 Toast.LENGTH_SHORT).show();
-                        MainAdapter adapter = new MainAdapter(coins,MainActivity.this, itemname, imgIds);
+                        MainAdapter adapter = new MainAdapter(coins,MainActivity.this, itemName, imgIds);
                         listViewPrincipale.setAdapter(adapter);
+
 
                     }
                 });
+
 
 
 
@@ -83,8 +114,28 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         });
 
     }
+    public Coin[] getCoins() {
+        return coins;
+    }
 
+    public void setCoins(Coin[] coins) {
+        this.coins = coins;
+    }
+
+
+    public Activity getActivity() {
+        return this;
+    }
+
+    public CoinBase getCoinBase() {
+        return coinBase;
+    }
+
+    public void setCoinBase(CoinBase coinBase) {
+        this.coinBase = coinBase;
+    }
 }
