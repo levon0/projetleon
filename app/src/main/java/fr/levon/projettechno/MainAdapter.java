@@ -1,12 +1,15 @@
 package fr.levon.projettechno;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainAdapter extends BaseAdapter {
 
@@ -15,6 +18,7 @@ public class MainAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
     private final String[] itemname;
     private final Integer[] imgIds;
+    Coin coinChoisi;
 
     public MainAdapter(Coin[] coins, Context context, String[] itemname, Integer[] imgIds) {
         super();
@@ -23,6 +27,7 @@ public class MainAdapter extends BaseAdapter {
         layoutInflater = LayoutInflater.from(context);
         this.itemname = itemname;
         this.imgIds = imgIds;
+        coinChoisi=null;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class MainAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup parent) {
+    public View getView(final int i, View view, ViewGroup parent) {
         View v;
         if(view==null) {
              v = layoutInflater.inflate(R.layout.item_layout, null);
@@ -49,10 +54,19 @@ public class MainAdapter extends BaseAdapter {
         else{
             v=view;
         }
+
         ImageView img = v.findViewById(R.id.img);
-        TextView text=v.findViewById(R.id.ButtonPortefeuille);
-        text.setText(coins[i].getName());
+        Button button=v.findViewById(R.id.ButtonCoin);
+        button.setText(coins[i].getName());
         img.setImageResource(imgIds[i]);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), BuySellActivity.class).putExtra("achatOuVente",coins[i].getSymbol());
+                context.startActivity(intent);
+                coinChoisi=coins[i];
+            }
+        });
 
         return v;
     }

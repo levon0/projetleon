@@ -38,19 +38,20 @@ public class MainActivity extends AppCompatActivity {
         this.coinBase=new CoinBase(this, "Coins", 1);
         setContentView(R.layout.activity_main);
         Folio folio = new Folio();
-        CoinBase coinBase = new CoinBase(this,"Coins",null,1 );
 
         this.listViewPrincipale=(ListView) findViewById(R.id.list);
+        //Button viewCoin = findViewById (R.id.buttonCoin);
         try {
             this.run();
-            this.opener = (Button) this.findViewById(R.id.ButtonPortefeuille);
+            this.opener = (Button) this.findViewById(R.id.ButtonCoin);
+            /*Log.e("osef",opener.toString());
             opener.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(listViewPrincipale.getContext(), BuySellActivity.class);
                     startActivity(intent);
                 }
-            });
+            });*/
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,20 +88,23 @@ public class MainActivity extends AppCompatActivity {
 
                 itemName = new String[coins.length];
                 imgIds=new Integer[coins.length];
-                Log.i("nbcoins","+"+coins.length);
+
+                CoinBase coinBase = new CoinBase(getActivity(),"Coins",1);
+                Log.i("Test",coinBase.toString());
                 ((MainActivity)getActivity()).setCoins(coins); //et on set les coins ?
                 for (int i=0;i<coins.length;i++){
+                    coinBase.addData(coins[i]);
                     itemName[i]=coins[i].getSymbol();
                     imgIds[i]=(Integer) getResources().getIdentifier(itemName[i].toLowerCase(),"drawable",getPackageName());
-                    ((MainActivity)getActivity()).getCoinBase().addData(coins[i]);
+                    /*((MainActivity)getActivity()).getCoinBase().addData(coins[i]);*/
                 }
 
                 runOnUiThread(new Runnable() {
                     public void run(){
-                        Toast.makeText(MainActivity.this, "Informations récupérées.",
-                                Toast.LENGTH_SHORT).show();
                         MainAdapter adapter = new MainAdapter(coins,MainActivity.this, itemName, imgIds);
                         listViewPrincipale.setAdapter(adapter);
+                        Toast.makeText(MainActivity.this, "Informations récupérées.",
+                                Toast.LENGTH_SHORT).show();
 
 
                     }
